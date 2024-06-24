@@ -2,13 +2,13 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class EnemiesSpawner : MonoBehaviour
+public class ImprovedEnemiesSpawner : MonoBehaviour
 {
-    [SerializeField] private EnemyContoller _enemyContoller;
+    [SerializeField] private ImprovedEnemyContoller _enemyContoller;
     [SerializeField] private int _poolCapacity;
     [SerializeField] private int _maxPoolSize;
 
-    private ObjectPool<EnemyContoller> _pool;
+    private ObjectPool<ImprovedEnemyContoller> _pool;
     private float _spawnAreaLength;
     private float _spawnAreaWidth;
     private WaitForSeconds _waitForSeconds;
@@ -19,7 +19,7 @@ public class EnemiesSpawner : MonoBehaviour
         _spawnAreaWidth = transform.localScale.x / numberOfSide;
         _spawnAreaLength = transform.localScale.z / numberOfSide;
 
-        _pool = new ObjectPool<EnemyContoller>(
+        _pool = new ObjectPool<ImprovedEnemyContoller>(
             createFunc: () => Instantiate(_enemyContoller),
             actionOnGet: (enemyController) => ExecuteActionOnGet(enemyController),
             actionOnRelease: (enemyController) => ExecuteActionOnRelease(enemyController),
@@ -35,7 +35,7 @@ public class EnemiesSpawner : MonoBehaviour
         StartCoroutine(SpawnEnemies());
     }
 
-    private void ExecuteActionOnGet(EnemyContoller enemyContoller)
+    private void ExecuteActionOnGet(ImprovedEnemyContoller enemyContoller)
     {
         SetEnemyRotation(enemyContoller);
         SetEnemyPosition(enemyContoller);
@@ -44,13 +44,13 @@ public class EnemiesSpawner : MonoBehaviour
         enemyContoller.EnemyTouchedBorder += ExecuteActionOnEnemyTouchedBorder;
     }
 
-    private void ExecuteActionOnRelease(EnemyContoller enemyContoller)
+    private void ExecuteActionOnRelease(ImprovedEnemyContoller enemyContoller)
     {
         enemyContoller.gameObject.SetActive(false);
         enemyContoller.EnemyTouchedBorder -= ExecuteActionOnEnemyTouchedBorder;
     }
 
-    private void SetEnemyRotation(EnemyContoller enemyContoller)
+    private void SetEnemyRotation(ImprovedEnemyContoller enemyContoller)
     {
         float enemyRotationAngleX = 0;
         float minimumEnemyRotationAngleY = 0;
@@ -62,7 +62,7 @@ public class EnemiesSpawner : MonoBehaviour
         enemyContoller.transform.rotation = Quaternion.Euler(spawnRotationPosition);
     }
 
-    private void SetEnemyPosition(EnemyContoller enemyContoller)
+    private void SetEnemyPosition(ImprovedEnemyContoller enemyContoller)
     {
         float enemyPositionX = Random.Range(transform.position.x - _spawnAreaWidth, transform.position.x + _spawnAreaWidth);
         float nonStuckHeightPosition = transform.position.y + enemyContoller.transform.localScale.y;
@@ -73,7 +73,7 @@ public class EnemiesSpawner : MonoBehaviour
         enemyContoller.transform.position = spawnTransformPosition;
     }
 
-    private void SetEnemyVelocity(EnemyContoller enemyContoller)
+    private void SetEnemyVelocity(ImprovedEnemyContoller enemyContoller)
     {
         enemyContoller.TryGetComponent(out Rigidbody enemyRigidbody);
 
@@ -81,7 +81,7 @@ public class EnemiesSpawner : MonoBehaviour
         enemyRigidbody.angularVelocity = Vector3.zero;
     }
 
-    private void ExecuteActionOnEnemyTouchedBorder(EnemyContoller enemyContoller)
+    private void ExecuteActionOnEnemyTouchedBorder(ImprovedEnemyContoller enemyContoller)
     {
         enemyContoller.gameObject.SetActive(false);
         _pool.Release(enemyContoller);

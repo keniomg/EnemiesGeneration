@@ -3,11 +3,11 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
 
-public class EnemyContoller : MonoBehaviour
+public class ImprovedEnemyContoller : MonoBehaviour
 {
     [SerializeField] private float _enemySpeed;
 
-    public event Action<EnemyContoller> EnemyTouchedBorder;
+    public event Action<ImprovedEnemyContoller> EnemyTouchedBorder;
 
     private void Update()
     {
@@ -16,7 +16,7 @@ public class EnemyContoller : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.TryGetComponent(out Border border))
+        if (collision.collider.TryGetComponent(out Target border))
         {
             EnemyTouchedBorder?.Invoke(this);
         }

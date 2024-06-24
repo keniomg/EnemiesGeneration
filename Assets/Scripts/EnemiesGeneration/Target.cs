@@ -2,6 +2,6 @@ using UnityEngine;
 
 [RequireComponent (typeof(Collider))]
 
-public class Border : MonoBehaviour
+public class Target : MonoBehaviour
 {
 }
