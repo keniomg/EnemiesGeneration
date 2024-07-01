@@ -5,35 +5,35 @@ using UnityEngine;
 
 public class EnemyMover : MonoBehaviour
 {
-    [SerializeField] private float _enemySpeed;
+    [SerializeField] protected float _enemySpeed;
 
-    private Transform _target;
+    public event Action<EnemyMover> EnemyTouchedBorder;
 
-    public event Action<EnemyMover> EnemyTouchedTarget;
-
-    private void Update()
+    protected void Update()
     {
-        MoveTowardsTarget(_target);
+        MoveInDirection();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.TryGetComponent(out Target target))
+        if (collision.collider.TryGetComponent(out Border border))
         {
-            EnemyTouchedTarget?.Invoke(this);
+            EnemyTouchedBorder?.Invoke(this);
+        }
+        else
+        {
+            string noBorderComponentMessage = "Other gameObject have no 'Border' component.";
+            Debug.Log(noBorderComponentMessage);
         }
     }
 
-    public void InitializeTarget(Transform target)
+    public void InitializeDirection(Vector3 direction)
     {
-        _target = target;
+        transform.rotation = Quaternion.Euler(direction);
     }
-    
-    private void MoveTowardsTarget(Transform target)
+
+    private void MoveInDirection()
     {
-        float defaultLookAtTargetPositionY = transform.position.y;
-        Vector3 lookAtTargetPosition = new Vector3(target.position.x, defaultLookAtTargetPositionY, target.position.z);
-        transform.LookAt(lookAtTargetPosition);
-        transform.position = Vector3.MoveTowards(transform.position, target.position, _enemySpeed * Time.deltaTime);
+        transform.Translate(Vector3.forward * _enemySpeed * Time.deltaTime);
     }
 }

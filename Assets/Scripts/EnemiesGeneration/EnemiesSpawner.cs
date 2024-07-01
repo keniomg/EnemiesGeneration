@@ -7,7 +7,6 @@ public class EnemiesSpawner : MonoBehaviour
     [SerializeField] private EnemyMover _enemyMover;
     [SerializeField] private int _poolCapacity;
     [SerializeField] private int _maxPoolSize;
-    [SerializeField] private Transform _target;
 
     private ObjectPool<EnemyMover> _pool;
     private float _spawnAreaLength;
@@ -22,8 +21,8 @@ public class EnemiesSpawner : MonoBehaviour
 
         _pool = new ObjectPool<EnemyMover>(
             createFunc: () => Instantiate(_enemyMover),
-            actionOnGet: (enemyMover) => GetObjectFromPool(enemyMover),
-            actionOnRelease: (enemyMover) => ReleaseObjectToPool(enemyMover),
+            actionOnGet: (enemyMover) => AccompanyGetObjectWithAdditionalSettings(enemyMover),
+            actionOnRelease: (enemyMover) => AccompanyReleaseObjectWithAdditionalSettings(enemyMover),
             actionOnDestroy: (enemyMover) => Destroy(enemyMover),
             collectionCheck: true,
             defaultCapacity: _poolCapacity,
@@ -36,30 +35,44 @@ public class EnemiesSpawner : MonoBehaviour
         StartCoroutine(SpawnEnemies());
     }
 
-    private void GetObjectFromPool(EnemyMover enemyMover)
+    private IEnumerator SpawnEnemies()
     {
-        SetEnemyRotation(enemyMover);
+        int spawnDelay = 2;
+        _waitForSeconds = new(spawnDelay);
+
+        while (true)
+        {
+            _pool.Get();
+            yield return _waitForSeconds;
+        }
+    }
+
+    private void AccompanyGetObjectWithAdditionalSettings(EnemyMover enemyMover)
+    {
         SetEnemyPosition(enemyMover);
         SetEnemyVelocity(enemyMover);
-        enemyMover.InitializeTarget(_target);
+        enemyMover.InitializeDirection(GetEnemyDirection());
         enemyMover.gameObject.SetActive(true);
-        enemyMover.EnemyTouchedTarget += ExecuteActionOnEnemyTouchedTarget;
+        enemyMover.EnemyTouchedBorder += DisableEnemyTouchedTarget;
     }
 
-    private void ReleaseObjectToPool(EnemyMover enemyMover)
+    private void AccompanyReleaseObjectWithAdditionalSettings(EnemyMover enemyMover)
     {
         enemyMover.gameObject.SetActive(false);
-        enemyMover.EnemyTouchedTarget -= ExecuteActionOnEnemyTouchedTarget;
+        enemyMover.EnemyTouchedBorder -= DisableEnemyTouchedTarget;
     }
 
-    private void SetEnemyRotation(EnemyMover enemyMover)
+    private Vector3 GetEnemyDirection()
     {
         float enemyRotationAngleX = 0;
-        float enemyRotationAngleY = 0;
         float enemyRotationAngleZ = 0;
-        Vector3 spawnRotationPosition = new Vector3(enemyRotationAngleX, enemyRotationAngleY, enemyRotationAngleZ);
 
-        enemyMover.transform.rotation = Quaternion.Euler(spawnRotationPosition);
+        float minimumRotationAngleY = 0;
+        float maximumRotationAngleY = 360;
+        float enemyRotationAngleY = Random.Range(minimumRotationAngleY, maximumRotationAngleY);
+
+        Vector3 spawnRotationPosition = new(enemyRotationAngleX, enemyRotationAngleY, enemyRotationAngleZ);
+        return spawnRotationPosition;
     }
 
     private void SetEnemyPosition(EnemyMover enemyMover)
@@ -68,7 +81,7 @@ public class EnemiesSpawner : MonoBehaviour
         float nonStuckHeightPosition = transform.position.y + enemyMover.transform.localScale.y;
         float enemyPositionY = nonStuckHeightPosition;
         float enemyPositionZ = Random.Range(transform.position.z - _spawnAreaLength, transform.position.z + _spawnAreaLength);
-        Vector3 spawnTransformPosition = new Vector3(enemyPositionX, enemyPositionY, enemyPositionZ);
+        Vector3 spawnTransformPosition = new(enemyPositionX, enemyPositionY, enemyPositionZ);
 
         enemyMover.transform.position = spawnTransformPosition;
     }
@@ -81,21 +94,9 @@ public class EnemiesSpawner : MonoBehaviour
         enemyRigidbody.angularVelocity = Vector3.zero;
     }
 
-    private void ExecuteActionOnEnemyTouchedTarget(EnemyMover enemyMover)
+    private void DisableEnemyTouchedTarget(EnemyMover enemyMover)
     {
         enemyMover.gameObject.SetActive(false);
         _pool.Release(enemyMover);
-    }
-
-    private IEnumerator SpawnEnemies()
-    {
-        int spawnDelay = 2;
-        _waitForSeconds = new(spawnDelay);
-
-        while (true)
-        {
-            _pool.Get();
-            yield return _waitForSeconds;
-        }
     }
 }
