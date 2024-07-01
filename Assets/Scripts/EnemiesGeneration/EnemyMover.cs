@@ -9,7 +9,7 @@ public class EnemyMover : MonoBehaviour
 
     public event Action<EnemyMover> EnemyTouchedBorder;
 
-    protected void Update()
+    private void Update()
     {
         MoveInDirection();
     }

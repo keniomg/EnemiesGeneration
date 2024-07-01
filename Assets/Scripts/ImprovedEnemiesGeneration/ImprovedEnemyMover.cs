@@ -12,6 +12,11 @@ public class ImprovedEnemyMover : EnemyMover
 
     public event Action<ImprovedEnemyMover> EnemyTouchedTarget;
 
+    private void Update()
+    {
+        MoveTowardsTarget();
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.TryGetComponent(out Target target))
