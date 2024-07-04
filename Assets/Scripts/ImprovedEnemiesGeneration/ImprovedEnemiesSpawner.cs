@@ -101,7 +101,6 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
 
     private void OnEnemyTouchedTarget(ImprovedEnemyMover enemyMover)
     {
-        enemyMover.gameObject.SetActive(false);
         _pool.Release(enemyMover);
     }
 }
