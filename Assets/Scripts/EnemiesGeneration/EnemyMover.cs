@@ -7,6 +7,8 @@ public class EnemyMover : MonoBehaviour
 {
     [SerializeField] protected float _enemySpeed;
 
+    private Vector3 _direction;
+
     public event Action<EnemyMover> EnemyTouchedBorder;
 
     private void Update()
@@ -29,11 +31,11 @@ public class EnemyMover : MonoBehaviour
 
     public void InitializeDirection(Vector3 direction)
     {
-        transform.rotation = Quaternion.Euler(direction);
+        _direction = direction;
     }
 
     private void MoveInDirection()
     {
-        transform.Translate(Vector3.forward * _enemySpeed * Time.deltaTime);
+        transform.Translate(_direction * _enemySpeed * Time.deltaTime);
     }
 }

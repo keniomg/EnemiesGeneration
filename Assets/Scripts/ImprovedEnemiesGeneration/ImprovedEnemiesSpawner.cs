@@ -24,8 +24,8 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
 
         _pool = new ObjectPool<ImprovedEnemyMover>(
             createFunc: () => Instantiate(_enemyMover),
-            actionOnGet: (enemyMover) => AccompanyGetObjectWithAdditionalSettings(enemyMover),
-            actionOnRelease: (enemyMover) => AccompanyReleaseObjectWithAdditionalSettings(enemyMover),
+            actionOnGet: (enemyMover) => AccompanyGetObject(enemyMover),
+            actionOnRelease: (enemyMover) => AccompanyReleaseObject(enemyMover),
             actionOnDestroy: (enemyMover) => Destroy(enemyMover),
             collectionCheck: true,
             defaultCapacity: _poolCapacity,
@@ -50,7 +50,7 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
         }
     }
 
-    private void AccompanyGetObjectWithAdditionalSettings(ImprovedEnemyMover enemyMover)
+    private void AccompanyGetObject(ImprovedEnemyMover enemyMover)
     {
         SetEnemyRotation(enemyMover);
         SetEnemyPosition(enemyMover);
@@ -60,13 +60,13 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
         enemyMover.InitializeWaypoints(_waypoints);
 
         enemyMover.gameObject.SetActive(true);
-        enemyMover.EnemyTouchedTarget += DisableEnemyTouchedTarget;
+        enemyMover.EnemyTouchedTarget += OnEnemyTouchedTarget;
     }
 
-    private void AccompanyReleaseObjectWithAdditionalSettings(ImprovedEnemyMover enemyMover)
+    private void AccompanyReleaseObject(ImprovedEnemyMover enemyMover)
     {
         enemyMover.gameObject.SetActive(false);
-        enemyMover.EnemyTouchedTarget -= DisableEnemyTouchedTarget;
+        enemyMover.EnemyTouchedTarget -= OnEnemyTouchedTarget;
         enemyMover.ResetWaypointIndex();
     }
 
@@ -99,7 +99,7 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
         enemyRigidbody.angularVelocity = Vector3.zero;
     }
 
-    private void DisableEnemyTouchedTarget(ImprovedEnemyMover enemyMover)
+    private void OnEnemyTouchedTarget(ImprovedEnemyMover enemyMover)
     {
         enemyMover.gameObject.SetActive(false);
         _pool.Release(enemyMover);

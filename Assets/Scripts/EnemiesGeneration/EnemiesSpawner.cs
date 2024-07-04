@@ -21,8 +21,8 @@ public class EnemiesSpawner : MonoBehaviour
 
         _pool = new ObjectPool<EnemyMover>(
             createFunc: () => Instantiate(_enemyMover),
-            actionOnGet: (enemyMover) => AccompanyGetObjectWithAdditionalSettings(enemyMover),
-            actionOnRelease: (enemyMover) => AccompanyReleaseObjectWithAdditionalSettings(enemyMover),
+            actionOnGet: (enemyMover) => AccompanyGetObject(enemyMover),
+            actionOnRelease: (enemyMover) => AccompanyReleaseObject(enemyMover),
             actionOnDestroy: (enemyMover) => Destroy(enemyMover),
             collectionCheck: true,
             defaultCapacity: _poolCapacity,
@@ -47,32 +47,35 @@ public class EnemiesSpawner : MonoBehaviour
         }
     }
 
-    private void AccompanyGetObjectWithAdditionalSettings(EnemyMover enemyMover)
+    private void AccompanyGetObject(EnemyMover enemyMover)
     {
         SetEnemyPosition(enemyMover);
         SetEnemyVelocity(enemyMover);
         enemyMover.InitializeDirection(GetEnemyDirection());
         enemyMover.gameObject.SetActive(true);
-        enemyMover.EnemyTouchedBorder += DisableEnemyTouchedTarget;
+        enemyMover.EnemyTouchedBorder += OnEnemyTouchedTarget;
     }
 
-    private void AccompanyReleaseObjectWithAdditionalSettings(EnemyMover enemyMover)
+    private void AccompanyReleaseObject(EnemyMover enemyMover)
     {
         enemyMover.gameObject.SetActive(false);
-        enemyMover.EnemyTouchedBorder -= DisableEnemyTouchedTarget;
+        enemyMover.EnemyTouchedBorder -= OnEnemyTouchedTarget;
     }
 
     private Vector3 GetEnemyDirection()
     {
-        float enemyRotationAngleX = 0;
-        float enemyRotationAngleZ = 0;
+        float minimumEnemyDirectionX = -1;
+        float maximumEnemyDirectionX = 1;
+        float minimumEnemyDirectionZ = -1;
+        float maximumEnemyDirectionZ = 1;
 
-        float minimumRotationAngleY = 0;
-        float maximumRotationAngleY = 360;
-        float enemyRotationAngleY = Random.Range(minimumRotationAngleY, maximumRotationAngleY);
+        float enemyDirectionX = Random.Range(minimumEnemyDirectionX, maximumEnemyDirectionX);
+        float enemyDirectionY = 0;
+        float enemyDirectionZ = Random.Range(minimumEnemyDirectionZ, maximumEnemyDirectionZ);
+        Vector3 enemyDirection = new(enemyDirectionX, enemyDirectionY, enemyDirectionZ);
+        enemyDirection.Normalize();
 
-        Vector3 spawnRotationPosition = new(enemyRotationAngleX, enemyRotationAngleY, enemyRotationAngleZ);
-        return spawnRotationPosition;
+        return enemyDirection;
     }
 
     private void SetEnemyPosition(EnemyMover enemyMover)
@@ -94,9 +97,8 @@ public class EnemiesSpawner : MonoBehaviour
         enemyRigidbody.angularVelocity = Vector3.zero;
     }
 
-    private void DisableEnemyTouchedTarget(EnemyMover enemyMover)
+    private void OnEnemyTouchedTarget(EnemyMover enemyMover)
     {
-        enemyMover.gameObject.SetActive(false);
         _pool.Release(enemyMover);
     }
 }
