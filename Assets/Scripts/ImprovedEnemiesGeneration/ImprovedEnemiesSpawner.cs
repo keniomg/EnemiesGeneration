@@ -8,7 +8,7 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
     [SerializeField] private ImprovedEnemyMover _enemyMover;
     [SerializeField] private int _poolCapacity;
     [SerializeField] private int _maxPoolSize;
-    [SerializeField] private Transform _target;
+    [SerializeField] private Target _target;
     [SerializeField] private List<Transform> _waypoints;
 
     private ObjectPool<ImprovedEnemyMover> _pool;
@@ -21,6 +21,7 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
         int numberOfSide = 2;
         _spawnAreaWidth = transform.localScale.x / numberOfSide;
         _spawnAreaLength = transform.localScale.z / numberOfSide;
+        _target.InitializeWaypoints(_waypoints);
 
         _pool = new ObjectPool<ImprovedEnemyMover>(
             createFunc: () => Instantiate(_enemyMover),
@@ -56,9 +57,7 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
         SetEnemyPosition(enemyMover);
         SetEnemyVelocity(enemyMover);
 
-        enemyMover.InitializeTarget(_target);
-        enemyMover.InitializeWaypoints(_waypoints);
-
+        enemyMover.InitializeTarget(_target.transform);
         enemyMover.gameObject.SetActive(true);
         enemyMover.EnemyTouchedTarget += OnEnemyTouchedTarget;
     }
@@ -67,7 +66,6 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
     {
         enemyMover.gameObject.SetActive(false);
         enemyMover.EnemyTouchedTarget -= OnEnemyTouchedTarget;
-        enemyMover.ResetWaypointIndex();
     }
 
     private void SetEnemyRotation(ImprovedEnemyMover enemyMover)
@@ -93,10 +91,15 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
 
     private void SetEnemyVelocity(ImprovedEnemyMover enemyMover)
     {
-        enemyMover.TryGetComponent(out Rigidbody enemyRigidbody);
-
-        enemyRigidbody.velocity = Vector3.zero;
-        enemyRigidbody.angularVelocity = Vector3.zero;
+        if (enemyMover.TryGetComponent(out Rigidbody enemyRigidbody))
+        {
+            enemyRigidbody.velocity = Vector3.zero;
+            enemyRigidbody.angularVelocity = Vector3.zero;
+        }
+        else
+        {
+            return;
+        }
     }
 
     private void OnEnemyTouchedTarget(ImprovedEnemyMover enemyMover)

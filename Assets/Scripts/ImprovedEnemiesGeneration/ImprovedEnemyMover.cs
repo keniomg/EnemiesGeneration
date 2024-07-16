@@ -1,13 +1,10 @@
 using UnityEngine;
-using System.Collections.Generic;
 using System;
 
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
 
 public class ImprovedEnemyMover : EnemyMover
 {
-    private List<Transform> _waypoints;
-    private int _currentWaypointIndex = 0;
     private Transform _target;
 
     public event Action<ImprovedEnemyMover> EnemyTouchedTarget;
@@ -25,8 +22,7 @@ public class ImprovedEnemyMover : EnemyMover
         }
         else
         {
-            string noTargetComponentMessage = "Other gameObject have no 'Target' component.";
-            Debug.Log(noTargetComponentMessage);
+            return;
         }
     }
 
@@ -35,30 +31,11 @@ public class ImprovedEnemyMover : EnemyMover
         _target = target;
     }
 
-    public void ResetWaypointIndex()
-    {
-        _currentWaypointIndex = 0;
-    }
-
-    public void InitializeWaypoints(List<Transform> waypoints)
-    {
-        _waypoints = waypoints;
-        _waypoints.Add(_target.transform);
-    }
-
     private void MoveTowardsTarget()
     {
         float defaultHeightTargetPositionY = transform.position.y;
-        Vector3 waypointPosition = new(_waypoints[_currentWaypointIndex].position.x, defaultHeightTargetPositionY, _waypoints[_currentWaypointIndex].position.z);
-
-        if (transform.position == waypointPosition)
-        {
-            int nextWaypointIndex = _currentWaypointIndex + 1;
-            _currentWaypointIndex = nextWaypointIndex % _waypoints.Count;
-        }
-
-        Vector3 lookAtTargetPosition = new(_waypoints[_currentWaypointIndex].position.x, defaultHeightTargetPositionY, _waypoints[_currentWaypointIndex].position.z);
+        Vector3 lookAtTargetPosition = new(_target.position.x, defaultHeightTargetPositionY, _target.position.z);
         transform.LookAt(lookAtTargetPosition);
-        transform.position = Vector3.MoveTowards(transform.position, waypointPosition, _enemySpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, _target.position, _enemySpeed * Time.deltaTime);
     }
 }

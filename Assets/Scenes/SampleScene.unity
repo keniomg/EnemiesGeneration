@@ -256,7 +256,7 @@ MonoBehaviour:
     type: 3}
   _poolCapacity: 2
   _maxPoolSize: 4
-  _target: {fileID: 1613493512}
+  _target: {fileID: 1613493513}
   _waypoints:
   - {fileID: 25026558}
   - {fileID: 390835001}
@@ -899,6 +899,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c03fb415fabaf54d9e73dfd88e7071b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _targetSpeed: 5
 --- !u!136 &489410567
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1033,6 +1034,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c03fb415fabaf54d9e73dfd88e7071b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _targetSpeed: 5
 --- !u!136 &668452787
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1273,7 +1275,7 @@ MonoBehaviour:
     type: 3}
   _poolCapacity: 2
   _maxPoolSize: 4
-  _target: {fileID: 1990183423}
+  _target: {fileID: 1990183425}
   _waypoints:
   - {fileID: 567978024}
   - {fileID: 1312228396}
@@ -1565,7 +1567,7 @@ MonoBehaviour:
     type: 3}
   _poolCapacity: 2
   _maxPoolSize: 4
-  _target: {fileID: 668452785}
+  _target: {fileID: 668452786}
   _waypoints:
   - {fileID: 781649659}
   - {fileID: 751222999}
@@ -1790,6 +1792,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c03fb415fabaf54d9e73dfd88e7071b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _targetSpeed: 5
 --- !u!136 &1613493514
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1884,7 +1887,7 @@ MonoBehaviour:
     type: 3}
   _poolCapacity: 2
   _maxPoolSize: 4
-  _target: {fileID: 489410565}
+  _target: {fileID: 489410566}
   _waypoints:
   - {fileID: 936812725}
   - {fileID: 1291948074}
@@ -2256,6 +2259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c03fb415fabaf54d9e73dfd88e7071b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _targetSpeed: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
