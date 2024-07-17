@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent (typeof(Collider))]
+[RequireComponent(typeof(Collider))]
 
 public class Target : MonoBehaviour
 {
@@ -27,8 +27,7 @@ public class Target : MonoBehaviour
 
         if (transform.position == waypointPosition)
         {
-            int nextWaypointIndex = _currentWaypointIndex + 1;
-            _currentWaypointIndex = nextWaypointIndex % _waypoints.Count;
+            _currentWaypointIndex = ++_currentWaypointIndex % _waypoints.Count;
         }
 
         transform.position = Vector3.MoveTowards(transform.position, waypointPosition, _targetSpeed * Time.deltaTime);

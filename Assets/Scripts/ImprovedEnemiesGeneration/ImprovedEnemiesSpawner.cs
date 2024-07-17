@@ -55,7 +55,7 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
     {
         SetEnemyRotation(enemyMover);
         SetEnemyPosition(enemyMover);
-        SetEnemyVelocity(enemyMover);
+        ResetEnemyVelocity(enemyMover);
 
         enemyMover.InitializeTarget(_target.transform);
         enemyMover.gameObject.SetActive(true);
@@ -89,16 +89,12 @@ public class ImprovedEnemiesSpawner : MonoBehaviour
         enemyMover.transform.position = spawnTransformPosition;
     }
 
-    private void SetEnemyVelocity(ImprovedEnemyMover enemyMover)
+    private void ResetEnemyVelocity(ImprovedEnemyMover enemyMover)
     {
         if (enemyMover.TryGetComponent(out Rigidbody enemyRigidbody))
         {
             enemyRigidbody.velocity = Vector3.zero;
             enemyRigidbody.angularVelocity = Vector3.zero;
-        }
-        else
-        {
-            return;
         }
     }
 

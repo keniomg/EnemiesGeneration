@@ -20,10 +20,6 @@ public class ImprovedEnemyMover : EnemyMover
         {
             EnemyTouchedTarget?.Invoke(this);
         }
-        else
-        {
-            return;
-        }
     }
 
     public void InitializeTarget(Transform target)
